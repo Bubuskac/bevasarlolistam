@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import Login from './Login';
-import List from './List';
 import './App.css';
 
 const App: FunctionComponent<{}> = () => {
@@ -11,7 +10,7 @@ const App: FunctionComponent<{}> = () => {
           Bevásárlólistám
         </h1>
       </header>
-      {false ? <Login /> : <List />}
+      <Login />
     </div>
   );
 }
