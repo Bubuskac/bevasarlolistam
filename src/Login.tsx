@@ -5,11 +5,13 @@ const Login: FunctionComponent<{}> = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
+    const [message, setMessage] = useState('');
     return (
         <section>
-            {token !== '' ? <List /> : 
+            {token ? <List /> : 
             <div className="login">
                 <p>Bejelentkezés</p>
+                {message && <p>{message}</p>}
                 <p>
                     <input placeholder="E-mail cím" id="email" 
                         value={email} onChange={(e: FormEvent<HTMLInputElement>) => setEmail(e.currentTarget.value)} />
@@ -31,8 +33,13 @@ const Login: FunctionComponent<{}> = () => {
                                 password: password
                             })
                         });
-                        let json = await response.json();
-                        setToken(json.token);
+                        let data = await response.json();
+                        if (data.success) {
+                            setToken(data.token);
+                            setMessage('Sikertelen belépés');
+                        } else {
+                            setMessage('Sikertelen belépés');
+                        }
                     }}>
                         Belépés
                     </button>
