@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, FunctionComponent } from 'react';
-import List from './List';
+import MainView from './MainView';
 
 const Login: FunctionComponent<{}> = () => {
     const [email, setEmail] = useState('');
@@ -8,7 +8,7 @@ const Login: FunctionComponent<{}> = () => {
     const [message, setMessage] = useState('');
     return (
         <section>
-            {token ? <List /> : 
+            {token ? <MainView token={token} /> : 
             <div className="login">
                 <p>Bejelentkezés</p>
                 {message && <p>{message}</p>}
@@ -21,7 +21,7 @@ const Login: FunctionComponent<{}> = () => {
                         value={password} onChange={(e: FormEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}/>
                 </p>
                 <p className="login-button">
-                    <button onClick={async (event) => {
+                    <button onClick={async () => {
                         let response = await fetch('http://localhost:8080', {
                             method: 'POST',
                             headers: {
@@ -29,6 +29,7 @@ const Login: FunctionComponent<{}> = () => {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                method: 'login',
                                 email: email,
                                 password: password
                             })
@@ -36,7 +37,7 @@ const Login: FunctionComponent<{}> = () => {
                         let data = await response.json();
                         if (data.success) {
                             setToken(data.token);
-                            setMessage('Sikertelen belépés');
+                            setMessage('');
                         } else {
                             setMessage('Sikertelen belépés');
                         }

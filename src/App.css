@@ -20,9 +20,15 @@
   border: 0;
   background-color: white;
 }
-.Dialog {
+.dialog {
+  position: absolute;
+  left: 50%;
+}
+.inner-dialog {
   position: relative;
   margin: auto;
   width: 200px;
+  left: -100px;
   border: 1px black solid;
+  background-color: white;
 }

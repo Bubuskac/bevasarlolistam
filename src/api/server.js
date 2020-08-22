@@ -27,10 +27,19 @@ const server = http.createServer((request, response) => {
             const post = querystring.parse(requestJson);
             const postData = JSON.parse(Object.keys(post)[0]);
             const user = JSON.parse(fs.readFileSync("database.json", "utf8")).users[0];
-            if (user.email === postData.email && user.password === postData.password) {
-                response.write(JSON.stringify({token: user.token, success: true}));
-            } else {
-                response.write(JSON.stringify({success: false, message: 'Invalid Credentials'}));
+            if (postData.method === 'login') {
+                if (user.email === postData.email && user.password === postData.password) {
+                    response.write(JSON.stringify({token: user.token, success: true}));
+                } else {
+                    response.write(JSON.stringify({success: false, message: 'Invalid Credentials'}));
+                }
+            }
+            if (postData.method === 'add') {
+                if (user.token === postData.token) {
+                    response.write(JSON.stringify({success: true}));
+                } else {
+                    response.write(JSON.stringify({success: false, message: 'Invalid Token'}));
+                }
             }
             response.end();
         });
