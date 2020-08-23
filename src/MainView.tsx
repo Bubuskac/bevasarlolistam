@@ -30,6 +30,18 @@ class MainView extends Component<MainViewProps, MainViewState> {
         }
         me = this;
     }
+
+    async send(data:object) {
+        let response = await fetch('http://localhost:8080', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        return await response.json();
+    }
     
     empty() {
         this.setState({showDialog: true});
@@ -39,35 +51,46 @@ class MainView extends Component<MainViewProps, MainViewState> {
         me.setState({showDialog: false});
     }
 
-    removeList() {
-        me.setState({
-            showDialog: false,
-            list: []
+    async removeList() {
+        let data = await me.send({
+            method: 'emptyList',
+            token: me.token
         });
-        const list = me.list.current;
-        if (list) {
-            list.setState({list: []});
+        if (data.success) {
+            me.setState({
+                showDialog: false,
+                list: [],
+                message: ''
+            });
+            const list = me.list.current;
+            if (list) {
+                list.setState({list: []});
+            }
+        } else {
+            this.setState({message: data.message});
         }
     }
 
     async addElement() {
-        let response = await fetch('http://localhost:8080', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                method: 'add',
-                newElement: this.state.newElement,
-                token: this.token
-            })
+        if (this.state.newElement === '') {
+            return;
+        }
+        if (this.state.list.includes(this.state.newElement)) {
+            this.setState({
+                message: `"${this.state.newElement}" már a listában van`
+            });
+            return;
+        }
+        let data = await this.send({
+            method: 'add',
+            newElement: this.state.newElement,
+            token: this.token
         });
-        let data = await response.json();
         if (data.success) {
             this.setState({
                 newElement: '',
-                list: this.state.list.concat([this.state.newElement])
+                list: this.state.list.concat([this.state.newElement]),
+                message: ''
             });
             const list = this.list.current;
             if (list) {

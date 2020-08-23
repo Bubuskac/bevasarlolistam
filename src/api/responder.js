@@ -34,6 +34,24 @@ class responder {
         }
         return JSON.stringify(result);
     }
+
+    emptyList(data) {
+        const {token: token} = data;
+        const user = dataManager.getUser(token);
+        let result = { success: true };
+        if (user) {
+            try {
+                dataManager.emptyList(user.userId);
+            } catch (e) {
+                result.success = false;
+                result.message = 'Error';
+            }
+        } else {
+            result.success = false;
+            result.message = 'Invalid Token';
+        }
+        return JSON.stringify(result);
+    }
 }
 
 module.exports = new responder();
