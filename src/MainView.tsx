@@ -1,6 +1,6 @@
 import React, { Component, FormEvent, createRef } from 'react';
-import Dialog from './Dialog';
-import ItemList from './ItemList';
+import Dialog from './mainview/Dialog';
+import ItemList from './mainview/ItemList';
 
 interface MainViewState {
     showDialog: boolean,

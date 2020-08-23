@@ -1,3 +1,6 @@
+button {
+  cursor: pointer;
+}
 .App {
   text-align: center;
 }
@@ -16,8 +19,14 @@
 .login-button {
   text-align: end;
 }
+.logout {
+  background-color: white;
+  top: -13vh;
+  position: relative;
+  left: 43%;
+  font-weight: bolder;
+}
 .list-emptier {
-  border: 0;
   background-color: white;
 }
 .dialog {

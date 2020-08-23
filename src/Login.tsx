@@ -8,6 +8,7 @@ const Login: FunctionComponent<{}> = () => {
     const [message, setMessage] = useState('');
     return (
         <section>
+            {token && <button className="logout" onClick={() => setToken('')}>&#x2190;</button>}
             {token ? <MainView token={token} /> : 
             <div className="login">
                 <p>Bejelentkezés</p>

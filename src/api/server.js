@@ -1,12 +1,11 @@
 const http = require('http');
-const fs = require('fs');
 const querystring = require('querystring');
+const responder = require('./responder.js');
 
 const hostname = 'localhost';
 const port = 8080;
 
 const server = http.createServer((request, response) => {
-    console.log(new Date(), request.method, request.url);
     response.statusCode = 200;
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     response.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept');
@@ -26,21 +25,8 @@ const server = http.createServer((request, response) => {
         request.on('end', function () {
             const post = querystring.parse(requestJson);
             const postData = JSON.parse(Object.keys(post)[0]);
-            const user = JSON.parse(fs.readFileSync("database.json", "utf8")).users[0];
-            if (postData.method === 'login') {
-                if (user.email === postData.email && user.password === postData.password) {
-                    response.write(JSON.stringify({token: user.token, success: true}));
-                } else {
-                    response.write(JSON.stringify({success: false, message: 'Invalid Credentials'}));
-                }
-            }
-            if (postData.method === 'add') {
-                if (user.token === postData.token) {
-                    response.write(JSON.stringify({success: true}));
-                } else {
-                    response.write(JSON.stringify({success: false, message: 'Invalid Token'}));
-                }
-            }
+            console.log(new Date(), request.method, request.url, postData);
+            response.write(responder[postData.method](postData));
             response.end();
         });
     } else {
