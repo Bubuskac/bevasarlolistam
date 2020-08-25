@@ -26,6 +26,9 @@ class MainView extends Component<MainViewProps, MainViewState> {
             newElement: '',
             message: ''
         }
+    }
+
+    componentDidMount() {
         this.loadList();
     }
 
