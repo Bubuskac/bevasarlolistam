@@ -29,6 +29,15 @@ class dataManager {
         this.db.lists[userId] = [];
         fs.writeFileSync("database.json", JSON.stringify(this.db));
     }
+
+    removeItem(userId, item) {
+        this.db.lists[userId] = this.db.lists[userId].filter((element) => element !== item);
+        fs.writeFileSync("database.json", JSON.stringify(this.db));
+    }
+
+    getItems(userId) {
+        return this.db.lists[userId];
+    }
 }
 
 module.exports = new dataManager();

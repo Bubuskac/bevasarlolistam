@@ -52,6 +52,32 @@ class responder {
         }
         return JSON.stringify(result);
     }
+
+    delete(data) {
+        const {token: token, deleteElement: item} = data;
+        const user = dataManager.getUser(token);
+        let result = { success: true };
+        if (user) {
+            dataManager.removeItem(user.userId, item);
+        } else {
+            result.success = false;
+            result.message = 'Invalid Token';
+        }
+        return JSON.stringify(result);
+    }
+
+    load(data) {
+        const {token: token} = data;
+        const user = dataManager.getUser(token);
+        let result = { success: true };
+        if (user) {
+            result.list = dataManager.getItems(user.userId);
+        } else {
+            result.success = false;
+            result.message = 'Invalid Token';
+        }
+        return JSON.stringify(result);
+    }
 }
 
 module.exports = new responder();

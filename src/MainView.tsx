@@ -13,8 +13,6 @@ interface MainViewProps {
     token:string
 }
 
-let me:MainView;
-
 class MainView extends Component<MainViewProps, MainViewState> {
     token:string = '';
     list = createRef<ItemList>();
@@ -28,7 +26,7 @@ class MainView extends Component<MainViewProps, MainViewState> {
             newElement: '',
             message: ''
         }
-        me = this;
+        this.loadList();
     }
 
     async send(data:object) {
@@ -42,27 +40,46 @@ class MainView extends Component<MainViewProps, MainViewState> {
         });
         return await response.json();
     }
+
+    async loadList() {
+        let data = await this.send({
+            method: 'load',
+            token: this.token
+        }); 
+        if (data.success) {
+            this.setState({
+                list: data.list,
+                message: ''
+            });
+            const list = this.list.current;
+            if (list) {
+                list.setState({list: data.list});
+            }
+        } else {
+            this.setState({message: data.message});
+        }
+    }
     
     empty() {
         this.setState({showDialog: true});
     }
 
     cancel() {
-        me.setState({showDialog: false});
+        this.setState({showDialog: false});
     }
 
     async removeList() {
-        let data = await me.send({
+        let data = await this.send({
             method: 'emptyList',
-            token: me.token
+            token: this.token
         });
         if (data.success) {
-            me.setState({
+            this.setState({
                 showDialog: false,
                 list: [],
                 message: ''
             });
-            const list = me.list.current;
+            const list = this.list.current;
             if (list) {
                 list.setState({list: []});
             }
@@ -100,6 +117,26 @@ class MainView extends Component<MainViewProps, MainViewState> {
             this.setState({message: data.message});
         }
     }
+
+    async deleteElement(item:string) {
+        let data = await this.send({
+            method: 'delete',
+            deleteElement: item,
+            token: this.token
+        });
+        if (data.success) {
+            this.setState({
+                list: this.state.list.filter((listElement:string) => listElement !== item),
+                message: ''
+            });
+            const list = this.list.current;
+            if (list) {
+                list.setState({list: this.state.list});
+            }
+        } else {
+            this.setState({message: data.message});
+        }
+    }
     
     render() {
         return (
@@ -121,8 +158,9 @@ class MainView extends Component<MainViewProps, MainViewState> {
                 {this.state.showDialog && 
                     <Dialog message="Valóban törölni akarod az összes elemet?" 
                         onOk={this.removeList}
-                        onCancel={this.cancel}/>}
-                <ItemList list={this.state.list} ref={this.list}/>
+                        onCancel={this.cancel}
+                        parent={this}/>}
+                <ItemList list={this.state.list} ref={this.list} interface={this.deleteElement} parent={this}/>
             </div>
         );
     }

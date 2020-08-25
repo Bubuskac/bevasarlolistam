@@ -26,7 +26,11 @@ const server = http.createServer((request, response) => {
             const post = querystring.parse(requestJson);
             const postData = JSON.parse(Object.keys(post)[0]);
             console.log(new Date(), request.method, request.url, postData);
-            response.write(responder[postData.method](postData));
+            if (typeof responder[postData.method] === 'function') {
+                response.write(responder[postData.method](postData));
+            } else {
+                response.write(JSON.stringify({success: false, message: 'Invalid method'}));
+            }
             response.end();
         });
     } else {
