@@ -1,9 +1,11 @@
 const http = require('http');
 const querystring = require('querystring');
 const responder = require('./responder.js');
+const fs = require('fs');
+const config = require('./server.json');
 
-const hostname = 'localhost';
-const port = 8080;
+const hostname = config.host;
+const port = config.port;
 
 const server = http.createServer((request, response) => {
     response.statusCode = 200;
@@ -34,7 +36,18 @@ const server = http.createServer((request, response) => {
             response.end();
         });
     } else {
-        response.end();
+        console.log(new Date(), request.method, request.url);
+        let content = '404 File not found!';
+        try {
+            let file = request.url;
+            if (file === '/') {
+                file += 'index.html';
+            }
+            content = fs.readFileSync('../../build/' + file, null);
+        } catch (e) {
+            response.statusCode = 404;
+        }
+        response.end(content);
     }
 });
 

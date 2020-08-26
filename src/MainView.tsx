@@ -1,6 +1,7 @@
 import React, { Component, FormEvent, createRef } from 'react';
 import Dialog from './mainview/Dialog';
 import ItemList from './mainview/ItemList';
+import config from './api/server.json';
 
 interface MainViewState {
     showDialog: boolean,
@@ -33,7 +34,7 @@ class MainView extends Component<MainViewProps, MainViewState> {
     }
 
     async send(data:object) {
-        let response = await fetch('http://localhost:8080', {
+        let response = await fetch(`http://${config.host}:${config.port}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

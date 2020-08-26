@@ -1,5 +1,6 @@
 import React, { FormEvent, KeyboardEvent, Component } from 'react';
 import MainView from './MainView';
+import config from './api/server.json';
 
 interface LoginState {
     email: string,
@@ -30,7 +31,7 @@ class Login extends Component<LoginProps, LoginState> {
 
     async loginer() {
         const {email, password} = this.state;
-        let response = await fetch('http://localhost:8080', {
+        let response = await fetch(`http://${config.host}:${config.port}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
