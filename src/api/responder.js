@@ -58,7 +58,12 @@ class responder {
         const user = dataManager.getUser(token);
         let result = { success: true };
         if (user) {
-            dataManager.removeItem(user.userId, item);
+            try {
+                dataManager.removeItem(user.userId, item);
+            } catch (e) {
+                result.success = false;
+                result.message = 'Error';
+            }
         } else {
             result.success = false;
             result.message = 'Invalid Token';
